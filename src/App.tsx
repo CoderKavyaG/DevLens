@@ -1,10 +1,11 @@
-import React from 'react'
-import './index.css'
+import { tokenize } from './engine/tokenizer'
 
 function App() {
-  return (
-    <div>App</div>
-  )
+  const html = '<h1 class="title">kavi u did it</h1>'
+  const tokens = tokenize(html)
+  console.log(tokens)
+
+  return <div>open the console</div>
 }
 
 export default App
