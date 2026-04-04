@@ -1,11 +1,12 @@
 import { tokenize } from './engine/tokenizer'
+import { buildDom } from './engine/domBuilder'
 
 function App() {
-  const html = '<h1 class="title">kavi u did it</h1>'
+  const html = '<div><h1>Hello</h1><p>World</p></div>'
   const tokens = tokenize(html)
-  console.log(tokens)
-
-  return <div>open the console</div>
+  const dom = buildDom(tokens)
+  console.log(JSON.stringify(dom, null, 2))
+  return <div>open console</div>
 }
 
 export default App
