@@ -1,11 +1,12 @@
 import { tokenize } from './engine/tokenizer'
 import { buildDom } from './engine/domBuilder'
+import { computeStyle } from './engine/styleEngine'
 
 function App() {
-  const html = '<div><h1>Hello</h1><p>World</p></div>'
+  const html = '<h1 style="color:red">Hello</h1>'
   const tokens = tokenize(html)
   const dom = buildDom(tokens)
-  console.log(JSON.stringify(dom, null, 2))
+  if (dom) console.log(computeStyle(dom))
   return <div>open console</div>
 }
 
