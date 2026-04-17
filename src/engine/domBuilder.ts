@@ -1,4 +1,5 @@
 import { Token } from "./tokenizer"
+import { addStep } from "./stepEmitter"
 
 export type NodeType = 'element' | 'text'
 
@@ -31,11 +32,18 @@ export function buildDom(tokens: Token[]) : DomNode | null {
                 root = node
             }else {
                 const parent = stack[stack.length -1]
-                parent.children.push(node)
+                if(parent.children) parent.children.push(node)
             }
             // if not empty , set this node as child of top node
             // push this to the stack 
             stack.push(node);
+
+            //recrod the step 
+            addStep({
+                type:'building',
+                message: `eLEMENT NODE CREATED: <${token.name}>`,
+                dom: root
+            })
 
         }
         else if(token.type === 'text'){
@@ -43,12 +51,24 @@ export function buildDom(tokens: Token[]) : DomNode | null {
                 type:'text',
                 value: token.value
             }
+            addStep({
+                type:'building',
+                message: `TEXT NODE CREATED: "${token.value}"`,
+                dom: root
+            })
 
             const parent = stack[stack.length -1]
-            parent.children.push(textNode)
+            if(parent.children) parent.children.push(textNode)
 
         }else if(token.type === 'closeTag'){
             stack.pop()
+
+
+            addStep({
+                type: 'building',
+                message: `CLOSE TAG ENCOUNTERED: </${token.name}>`,
+                dom: root
+            })
         }
     }
 
