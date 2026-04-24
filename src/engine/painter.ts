@@ -2,7 +2,7 @@ import { LayoutBox } from "./layoutEngine";
 import { computeStyle } from "./styleEngine";
 import { addStep } from "./stepEmitter"
 
-export function paint(box: LayoutBox , ctx: CanvasRenderingContext2D): void {
+export function paint(box: LayoutBox , ctx: CanvasRenderingContext2D, silent: boolean = false): void {
 
     const style = computeStyle(box.node);
     const padding = box.paddingLeft || 0
@@ -42,14 +42,16 @@ export function paint(box: LayoutBox , ctx: CanvasRenderingContext2D): void {
     }
 
     // Record step for this box paint
-    addStep({
-        type: 'painting',
-        message: `Painted box: <${box.node.name || 'text'}> at (${box.x}, ${box.y}) size ${box.width}x${box.height} padding=${padding}`,
-        dom: box.node
-    })
+    if (!silent) {
+        addStep({
+            type: 'painting',
+            message: `Painted box: <${box.node.name || 'text'}> at (${box.x}, ${box.y}) size ${box.width}x${box.height} padding=${padding}`,
+            dom: box.node
+        })
+    }
 
     // Paint children
     for (const child of box.children) {
-        paint(child, ctx)
+        paint(child, ctx, silent)
     }
 }

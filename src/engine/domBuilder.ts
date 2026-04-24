@@ -11,7 +11,7 @@ export type DomNode = {
     value? : string
 }
 
-export function buildDom(tokens: Token[]) : DomNode | null {
+export function buildDom(tokens: Token[], silent: boolean = false) : DomNode | null {
 
     let root: DomNode | null = null
     const stack: DomNode[] = []
@@ -30,7 +30,7 @@ export function buildDom(tokens: Token[]) : DomNode | null {
             // if the root is still null , assign the first tag 
             if(!root){
                 root = node
-            }else {
+            }else if (stack.length > 0) {
                 const parent = stack[stack.length -1]
                 if(parent.children) parent.children.push(node)
             }
@@ -39,11 +39,13 @@ export function buildDom(tokens: Token[]) : DomNode | null {
             stack.push(node);
 
             //recrod the step 
-            addStep({
-                type:'building',
-                message: `eLEMENT NODE CREATED: <${token.name}>`,
-                dom: root
-            })
+            if (!silent) {
+                addStep({
+                    type:'building',
+                    message: `eLEMENT NODE CREATED: <${token.name}>`,
+                    dom: root
+                })
+            }
 
         }
         else if(token.type === 'text'){
@@ -51,24 +53,30 @@ export function buildDom(tokens: Token[]) : DomNode | null {
                 type:'text',
                 value: token.value
             }
-            addStep({
-                type:'building',
-                message: `TEXT NODE CREATED: "${token.value}"`,
-                dom: root
-            })
+            if (!silent) {
+                addStep({
+                    type:'building',
+                    message: `TEXT NODE CREATED: "${token.value}"`,
+                    dom: root
+                })
+            }
 
-            const parent = stack[stack.length -1]
-            if(parent.children) parent.children.push(textNode)
+            if (stack.length > 0) {
+                const parent = stack[stack.length -1]
+                if(parent.children) parent.children.push(textNode)
+            }
 
         }else if(token.type === 'closeTag'){
             stack.pop()
 
 
-            addStep({
-                type: 'building',
-                message: `CLOSE TAG ENCOUNTERED: </${token.name}>`,
-                dom: root
-            })
+            if (!silent) {
+                addStep({
+                    type: 'building',
+                    message: `CLOSE TAG ENCOUNTERED: </${token.name}>`,
+                    dom: root
+                })
+            }
         }
     }
 

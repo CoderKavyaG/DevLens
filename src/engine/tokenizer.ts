@@ -15,7 +15,7 @@ type State = 'initial' | 'inTag' | 'inText'
 
 // initial - not doing anything ( idle state ) , inTag - currently reading and inText - currently reading text content between tags 
 
-export function tokenize(html: string): Token[] {
+export function tokenize(html: string, silent: boolean = false): Token[] {
     const tokens: Token[] = []
     let state: State = 'initial'
     let buffer = ''
@@ -39,11 +39,13 @@ export function tokenize(html: string): Token[] {
             if (char === '<') {
                 tokens.push({ type: 'text', value: buffer })
                 // record step only when token is actually emitted
-                addStep({
-                    type: 'tokenizing',
-                    message: `Text token found: "${buffer}"`,
-                    tokens: [...tokens]
-                })
+                if (!silent) {
+                    addStep({
+                        type: 'tokenizing',
+                        message: `Text token found: "${buffer}"`,
+                        tokens: [...tokens]
+                    })
+                }
                 state = 'inTag'
                 buffer = ''
             } else {
@@ -57,11 +59,13 @@ export function tokenize(html: string): Token[] {
                 if (token) {
                     tokens.push(token)
                     // record step only when token is actually emitted
-                    addStep({
-                        type: 'tokenizing',
-                        message: `Tag token found: <${buffer}>`,
-                        tokens: [...tokens]
-                    })
+                    if (!silent) {
+                        addStep({
+                            type: 'tokenizing',
+                            message: `Tag token found: <${buffer}>`,
+                            tokens: [...tokens]
+                        })
+                    }
                 }
                 buffer = ''
                 state = 'initial'

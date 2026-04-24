@@ -22,7 +22,7 @@ export type LayoutBox = {
 }
 
 // more off the stacking of the block elements fucntion driveen 
-export function layout(node: DomNode, width: number, x: number = 0, y: number = 0, parentStyle?: any): LayoutBox {
+export function layout(node: DomNode, width: number, x: number = 0, y: number = 0, parentStyle?: any, silent: boolean = false): LayoutBox {
     const style = computeStyle(node, parentStyle)
 
     // Calculate padding and margin
@@ -79,7 +79,7 @@ export function layout(node: DomNode, width: number, x: number = 0, y: number = 
             if (child.type === 'text') {
                 const textStyle = computeStyle(child, style)
                 const textHeight = (textStyle.fontSize || 16) + 8
-                const childBox = layout(child, childWidth, currentX, padding, style)
+                const childBox = layout(child, childWidth, currentX, padding, style, silent)
                 childBox.y = padding
                 childBox.height = textHeight
                 childBox.width = childWidth
@@ -88,7 +88,7 @@ export function layout(node: DomNode, width: number, x: number = 0, y: number = 
                 currentY = Math.max(currentY, textHeight + padding)
                 maxX = currentX
             } else {
-                const childBox = layout(child, childWidth, currentX, padding, style)
+                const childBox = layout(child, childWidth, currentX, padding, style, silent)
                 childBox.y = padding
                 box.children.push(childBox)
                 currentX += childBox.width + gap
@@ -106,23 +106,27 @@ export function layout(node: DomNode, width: number, x: number = 0, y: number = 
                 box.height += textHeight + gap
                 currentY += textHeight + gap
 
-                addStep({
-                    type: 'layouting',
-                    message: `Text layout: height=${textHeight}px, padding=${padding}px at y=${currentY - textHeight}`,
-                    dom: node
-                })
+                if (!silent) {
+                    addStep({
+                        type: 'layouting',
+                        message: `Text layout: height=${textHeight}px, padding=${padding}px at y=${currentY - textHeight}`,
+                        dom: node
+                    })
+                }
             } else {
-                const childBox = layout(child, contentWidth, padding, currentY, style)
+                const childBox = layout(child, contentWidth, padding, currentY, style, silent)
                 box.children.push(childBox)
                 box.height += childBox.height + gap
                 currentY += childBox.height + gap
                 maxX = Math.max(maxX, childBox.width + padding)
 
-                addStep({
-                    type: 'layouting',
-                    message: `Element layout: <${child.name}> box=${childBox.width}x${childBox.height}px, padding=${padding}px`,
-                    dom: node
-                })
+                if (!silent) {
+                    addStep({
+                        type: 'layouting',
+                        message: `Element layout: <${child.name}> box=${childBox.width}x${childBox.height}px, padding=${padding}px`,
+                        dom: node
+                    })
+                }
             }
         }
         contentHeight = currentY + padding
