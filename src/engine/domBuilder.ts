@@ -42,8 +42,8 @@ export function buildDom(tokens: Token[], silent: boolean = false) : DomNode | n
             if (!silent) {
                 addStep({
                     type:'building',
-                    message: `eLEMENT NODE CREATED: <${token.name}>`,
-                    dom: root
+                    message: `ELEMENT NODE CREATED: <${token.name}>`,
+                    dom: root ? JSON.parse(JSON.stringify(root)) : null
                 })
             }
 
@@ -57,7 +57,7 @@ export function buildDom(tokens: Token[], silent: boolean = false) : DomNode | n
                 addStep({
                     type:'building',
                     message: `TEXT NODE CREATED: "${token.value}"`,
-                    dom: root
+                    dom: root ? JSON.parse(JSON.stringify(root)) : null
                 })
             }
 
@@ -74,7 +74,7 @@ export function buildDom(tokens: Token[], silent: boolean = false) : DomNode | n
                 addStep({
                     type: 'building',
                     message: `CLOSE TAG ENCOUNTERED: </${token.name}>`,
-                    dom: root
+                    dom: root ? JSON.parse(JSON.stringify(root)) : null
                 })
             }
         }

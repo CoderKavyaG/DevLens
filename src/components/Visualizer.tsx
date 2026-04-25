@@ -263,17 +263,25 @@ export default function Visualizer() {
         return res
     }
 
-    function renderDomTree(node: DomNode | null, depth = 0): string {
-        if (!node || depth > 5) return ''
-        const indent = '  '.repeat(depth)
-        const tag = node.type === 'text' ? `"${node.value?.slice(0, 20)}"` : `<${node.name}>`
-        let tree = `${indent}${tag}\n`
-        if (node.children) {
-            for (const child of node.children) {
-                tree += renderDomTree(child, depth + 1)
-            }
-        }
-        return tree
+    function VisualDomNode({ node, depth = 0 }: { node: DomNode, depth?: number }) {
+        if (!node || depth > 8) return null
+        const isText = node.type === 'text'
+        const color = isText ? 'var(--success)' : 'var(--accent)'
+        const tag = isText ? `"${node.value?.slice(0, 15)}..."` : `<${node.name}>`
+        
+        return (
+            <div style={{ marginLeft: depth > 0 ? 16 : 0, borderLeft: depth > 0 ? '1px dashed var(--border)' : 'none', paddingLeft: depth > 0 ? 12 : 0, marginTop: 6 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--bg-tertiary)', padding: '4px 10px', borderRadius: 6, border: `1px solid ${color}`, animation: 'fadeIn 0.3s ease-out' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}` }} />
+                    <span style={{ fontSize: 11, color: 'white', fontFamily: 'var(--font-mono)' }}>{tag}</span>
+                </div>
+                {node.children && node.children.length > 0 && (
+                    <div style={{ marginTop: 4 }}>
+                        {node.children.map((child, i) => <VisualDomNode key={i} node={child} depth={depth + 1} />)}
+                    </div>
+                )}
+            </div>
+        )
     }
 
     const step = steps[currentStep]
@@ -419,12 +427,12 @@ export default function Visualizer() {
                                     </div>
                                 )}
 
-                                {dom && (
-                                    <div>
-                                        <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8, fontWeight: 700 }}>DOM SNAPSHOT</p>
-                                        <pre style={{ fontSize: 11, fontFamily: 'var(--font-mono)', background: 'var(--bg-primary)', padding: 12, borderRadius: 8, overflowX: 'auto', color: '#a5b4fc' }}>
-                                            {renderDomTree(dom)}
-                                        </pre>
+                                {(step.dom || dom) && (
+                                    <div style={{ marginTop: 24 }}>
+                                        <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 12, fontWeight: 700 }}>VISUAL DOM TREE</p>
+                                        <div style={{ background: 'var(--bg-primary)', padding: 16, borderRadius: 8, overflowX: 'auto' }}>
+                                            <VisualDomNode node={(step.dom || dom)!} />
+                                        </div>
                                     </div>
                                 )}
                             </div>
