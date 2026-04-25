@@ -27,6 +27,7 @@ export default function Visualizer() {
     const [autoplaySpeed, setAutoplaySpeed] = useState(400)
     const [phase, setPhase] = useState<Phase>('idle')
     const [showCopyFeedback, setShowCopyFeedback] = useState(false)
+    const [showOnboarding, setShowOnboarding] = useState(true)
     const [hoveredBox, setHoveredBox] = useState<LayoutBox | null>(null)
     const [selectedBox, setSelectedBox] = useState<LayoutBox | null>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -301,6 +302,20 @@ export default function Visualizer() {
                 </div>
             </header>
 
+            {/* ONBOARDING BANNER */}
+            {showOnboarding && (
+                <div style={{ background: 'linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))', border: '1px solid var(--glass-border)', borderRadius: 12, padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', animation: 'fadeIn 0.4s ease-out' }}>
+                    <div>
+                        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'white', marginBottom: 8 }}>Welcome to DevLens! 🕵️‍♀️</h2>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.5, maxWidth: 800 }}>
+                            Ever wonder how Google Chrome or Safari turns boring text into beautiful websites? DevLens is like an X-ray machine for your browser. 
+                            Write some HTML, and watch in slow-motion as our engine reads your code, builds a family tree of boxes, and paints them on the screen!
+                        </p>
+                    </div>
+                    <button onClick={() => setShowOnboarding(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 18 }}>✕</button>
+                </div>
+            )}
+
             <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 320px', gap: 20, flex: 1, minHeight: 0 }}>
                 
                 <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -326,6 +341,10 @@ export default function Visualizer() {
                             spellCheck={false}
                             style={{ flex: 1, width: '100%', background: 'transparent', border: 'none', color: '#e2e8f0', fontFamily: 'var(--font-mono)', fontSize: 13, resize: 'none', outline: 'none', lineHeight: 1.6 }}
                         />
+                        <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: 8, padding: 12, fontSize: 11, color: 'var(--warning)', lineHeight: 1.5 }}>
+                            <strong style={{ display: 'block', marginBottom: 4 }}>⚠️ Safe Zone for Learning</strong>
+                            DevLens supports basic tags (<code>&lt;div&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;p&gt;</code>) and simple inline styles (<code>color</code>, <code>background-color</code>, <code>padding</code>, <code>margin</code>, <code>border</code>, <code>display: flex</code>). Complex CSS might not work!
+                        </div>
                         <button 
                             onClick={run} 
                             style={{ width: '100%', padding: '14px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}
@@ -453,6 +472,29 @@ export default function Visualizer() {
                             </div>
                         </div>
                     )}
+                    
+                    {/* JARGON BUSTER GLOSSARY */}
+                    <div style={{ padding: 16, borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+                        <h3 style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.05em' }}>Jargon Buster</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                            <div>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)' }}>TOKENIZING</span>
+                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Reading code and splitting it into tiny pieces (tokens) like words in a sentence.</p>
+                            </div>
+                            <div>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--success)' }}>BUILDING</span>
+                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Taking tokens to build a family tree. Each HTML tag becomes a "Node" (branch).</p>
+                            </div>
+                            <div>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--warning)' }}>LAYOUTING</span>
+                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Browser does math to figure out how wide, tall, and where every box goes.</p>
+                            </div>
+                            <div>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--error)' }}>PAINTING</span>
+                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Filling the boxes with background colors, borders, and text.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
