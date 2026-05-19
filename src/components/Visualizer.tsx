@@ -28,6 +28,7 @@ export default function Visualizer() {
     const [phase, setPhase] = useState<Phase>('idle')
     const [showCopyFeedback, setShowCopyFeedback] = useState(false)
     const [showOnboarding, setShowOnboarding] = useState(true)
+    const [showBlogTooltip, setShowBlogTooltip] = useState(false)
     const [hoveredBox, setHoveredBox] = useState<LayoutBox | null>(null)
     const [selectedBox, setSelectedBox] = useState<LayoutBox | null>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -291,7 +292,50 @@ export default function Visualizer() {
                     <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--ink-primary)' }}>DEVLENS</h1>
                     <p style={{ color: 'var(--ink-secondary)', fontSize: 13, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>Browser Engine Blueprint Visualizer</p>
                 </div>
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <a 
+                            href="https://coderkavyag.me/blog/understanding-working-of-browser"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-blog"
+                            onMouseEnter={() => setShowBlogTooltip(true)}
+                            onMouseLeave={() => setShowBlogTooltip(false)}
+                        >
+                            <span>📖</span>
+                            <span>READ BLOG</span>
+                        </a>
+                        {showBlogTooltip && (
+                            <div style={{
+                                position: 'absolute',
+                                top: 'calc(100% + 8px)',
+                                right: 0,
+                                background: 'var(--ink-primary)',
+                                color: 'var(--bg-page)',
+                                padding: '10px 14px',
+                                borderRadius: 'var(--radius-md)',
+                                fontSize: '11px',
+                                fontFamily: 'var(--font-mono)',
+                                border: '1px solid var(--border-strong)',
+                                boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)',
+                                zIndex: 1000,
+                                whiteSpace: 'nowrap',
+                                pointerEvents: 'none',
+                                animation: 'fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+                            }}>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '-4px',
+                                    right: '46px',
+                                    width: '8px',
+                                    height: '8px',
+                                    background: 'var(--ink-primary)',
+                                    transform: 'rotate(45deg)',
+                                }} />
+                                <span style={{ color: 'var(--bg-page)', fontWeight: 600 }}>UNDERSTAND MORE:</span> Read CoderKavyaG's blog on browsers! 🚀
+                            </div>
+                        )}
+                    </div>
                     <button 
                         onClick={() => {
                             if (!canvasRef.current) return
