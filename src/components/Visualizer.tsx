@@ -117,6 +117,8 @@ export default function Visualizer() {
         setCurrentStep(0)
         setPhase('idle')
         setIsAutoplay(false)
+        setSelectedBox(null)
+        setHoveredBox(null)
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d')
             if (ctx) {
@@ -290,6 +292,18 @@ export default function Visualizer() {
                     <p style={{ color: 'var(--ink-secondary)', fontSize: 13, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>Browser Engine Blueprint Visualizer</p>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
+                    <button 
+                        onClick={() => {
+                            if (!canvasRef.current) return
+                            const link = document.createElement('a')
+                            link.download = 'devlens-blueprint.png'
+                            link.href = canvasRef.current.toDataURL()
+                            link.click()
+                        }} 
+                        className="btn"
+                    >
+                        DOWNLOAD BLUEPRINT
+                    </button>
                     <button onClick={copyLink} className="btn" style={{ borderColor: showCopyFeedback ? 'var(--border-strong)' : 'var(--border-strong)' }}>
                         {showCopyFeedback ? 'COPIED' : 'SHARE LINK'}
                     </button>

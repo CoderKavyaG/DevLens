@@ -12,14 +12,17 @@ export type DomNode = {
 }
 
 export function buildDom(tokens: Token[], silent: boolean = false) : DomNode | null {
-
-    let root: DomNode | null = null
-    const stack: DomNode[] = []
+    // Create a single virtual root element that represents the browser viewport
+    const root: DomNode = {
+        type: 'element',
+        name: 'root',
+        attributes: { style: 'background-color: #ffffff; padding: 10;' },
+        children: []
+    }
+    const stack: DomNode[] = [root]
 
     for(const token of tokens){
         if(token.type === 'openTag'){
-
-            // create a nnew domnode object from token using name
             const node: DomNode = {
                 type: 'element',
                 name: token.name,
@@ -27,54 +30,51 @@ export function buildDom(tokens: Token[], silent: boolean = false) : DomNode | n
                 children: []
             }
 
-            // if the root is still null , assign the first tag 
-            if(!root){
-                root = node
-            }else if (stack.length > 0) {
-                const parent = stack[stack.length -1]
-                if(parent.children) parent.children.push(node)
-            }
-            // if not empty , set this node as child of top node
-            // push this to the stack 
+            const parent = stack[stack.length - 1]
+            if(parent.children) parent.children.push(node)
             stack.push(node);
 
-            //recrod the step 
             if (!silent) {
                 addStep({
                     type:'building',
                     message: `ELEMENT NODE CREATED: <${token.name}>`,
-                    dom: root ? JSON.parse(JSON.stringify(root)) : null
+                    dom: JSON.parse(JSON.stringify(root))
                 })
             }
-
         }
         else if(token.type === 'text'){
+            const val = token.value || ''
+            // Filter out whitespace-only nodes (which break flex gaps and margins)
+            if (val.trim() === '') {
+                continue
+            }
+
             const textNode: DomNode = {
                 type:'text',
-                value: token.value
+                value: val
             }
+            
+            const parent = stack[stack.length - 1]
+            if(parent.children) parent.children.push(textNode)
+
             if (!silent) {
                 addStep({
                     type:'building',
-                    message: `TEXT NODE CREATED: "${token.value}"`,
-                    dom: root ? JSON.parse(JSON.stringify(root)) : null
+                    message: `TEXT NODE CREATED: "${val}"`,
+                    dom: JSON.parse(JSON.stringify(root))
                 })
             }
-
-            if (stack.length > 0) {
-                const parent = stack[stack.length -1]
-                if(parent.children) parent.children.push(textNode)
-            }
-
         }else if(token.type === 'closeTag'){
-            stack.pop()
-
+            // Pop stack, but keep the virtual root at the bottom
+            if (stack.length > 1) {
+                stack.pop()
+            }
 
             if (!silent) {
                 addStep({
                     type: 'building',
                     message: `CLOSE TAG ENCOUNTERED: </${token.name}>`,
-                    dom: root ? JSON.parse(JSON.stringify(root)) : null
+                    dom: JSON.parse(JSON.stringify(root))
                 })
             }
         }
