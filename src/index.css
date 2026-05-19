@@ -1,66 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --bg-primary: #0d1117;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #21262d;
-  --accent: #58a6ff;
-  --accent-glow: rgba(88, 166, 255, 0.2);
-  --text-primary: #c9d1d9;
-  --text-secondary: #8b949e;
-  --border: #30363d;
-  --success: #3fb950;
-  --warning: #d29922;
-  --error: #f85149;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Menlo', 'Consolas', monospace;
+  /* --- Sketch / Blueprint palette: white + black + greys only --- */
+  --bg-page:       #f5f5f3;         /* warm off-white page */
+  --bg-panel:      #ffffff;         /* pure white panels */
+  --bg-inset:      #f0efed;         /* inset / textarea area */
+  --bg-muted:      #e8e7e4;         /* muted chip / tag bg */
+
+  --ink-primary:   #111111;         /* near-black main text */
+  --ink-secondary: #555555;         /* mid grey label text */
+  --ink-tertiary:  #999999;         /* light grey hints */
+
+  --border-strong: #111111;         /* bold sketch borders */
+  --border-mid:    #cccccc;         /* mid dividers */
+  --border-light:  #e2e2e2;         /* subtle dividers */
+
+  /* Phase indicator colours — greyscale spectrum */
+  --phase-tokenize: #111111;
+  --phase-build:    #444444;
+  --phase-layout:   #777777;
+  --phase-paint:    #aaaaaa;
+  --phase-done:     #111111;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Fira Code', 'Menlo', 'Consolas', monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
 }
 
-* {
+/* ─── Reset ──────────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ─── Base ───────────────────────────────────────────────── */
+html, body {
+  height: 100%;
+}
+
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ─── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-tertiary); }
+
+/* ─── Sketch panel ───────────────────────────────────────── */
+/* Hard 1px border, square corners — like a wireframe box     */
+.sketch-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* ─── Buttons ────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-panel);
+  color: var(--ink-primary);
+  padding: 7px 14px;
+  transition: background 0.12s, color 0.12s;
+  text-transform: uppercase;
+}
+.btn:hover {
+  background: var(--ink-primary);
+  color: var(--bg-panel);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 10px;
+.btn-primary {
+  background: var(--ink-primary);
+  color: var(--bg-panel);
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.btn-primary:hover {
+  background: #333333;
+  color: var(--bg-panel);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+/* ─── Code / mono text ───────────────────────────────────── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  padding: 1px 4px;
 }
 
-.glass-panel {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+/* ─── Phase chips ────────────────────────────────────────── */
+.phase-chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  color: var(--ink-secondary);
+  background: var(--bg-inset);
+}
+.phase-chip.active {
+  background: var(--ink-primary);
+  color: var(--bg-panel);
+  border-color: var(--ink-primary);
 }
 
-.accent-glow {
-  box-shadow: 0 0 20px var(--accent-glow);
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-in {
+  animation: fadeSlideIn 0.25s ease-out forwards;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+/* ─── Canvas grid paper bg ───────────────────────────────── */
+.canvas-bg {
+  background-color: #fafafa;
+  background-image:
+    linear-gradient(var(--border-light) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+  background-size: 20px 20px;
 }

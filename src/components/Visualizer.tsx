@@ -9,10 +9,10 @@ import { LayoutBox } from '../engine/layoutEngine'
 
 const EXAMPLES = {
     'Basic heading': '<h1>Hello World</h1>\n<p>Welcome to DevLens</p>',
-    'Glass Card': '<div style="background-color:rgba(255,255,255,0.1);padding:24;border:1px solid rgba(255,255,255,0.2)">\n  <h1 style="color:white">Glassmorphism</h1>\n  <p style="color:#94a3b8">This is a glass card effect.</p>\n</div>',
-    'Hero Section': '<div style="padding:40;background-color:#6366f1;color:white">\n  <h1 style="font-size:48">Modern Web</h1>\n  <p>Building the future of the internet.</p>\n</div>',
-    'Flex Layout': '<div style="display:flex;flex-direction:row;gap:20;padding:20">\n  <div style="background-color:#ef4444;padding:20;width:30%">A</div>\n  <div style="background-color:#10b981;padding:20;width:30%">B</div>\n  <div style="background-color:#3b82f6;padding:20;width:30%">C</div>\n</div>',
-    'Styled Text': '<h1 style="color:#8b5cf6;font-size:42;font-weight:bold">DevLens</h1>\n<p style="color:#64748b;font-size:18">Watch how browsers work.</p>'
+    'Glass Card': '<div style="background-color:rgba(0,0,0,0.05);padding:24;border:1px solid #111111">\n  <h1 style="color:#111111">Blueprint Card</h1>\n  <p style="color:#555555">This is a clean wireframe card layout.</p>\n</div>',
+    'Hero Section': '<div style="padding:40;background-color:#111111;color:white">\n  <h1 style="font-size:48">Modern Web</h1>\n  <p>Minimalist layout design system.</p>\n</div>',
+    'Flex Layout': '<div style="display:flex;flex-direction:row;gap:20;padding:20">\n  <div style="background-color:#f0efed;padding:20;width:30%;border:1px solid #111111">A</div>\n  <div style="background-color:#e8e7e4;padding:20;width:30%;border:1px solid #111111">B</div>\n  <div style="background-color:#ffffff;padding:20;width:30%;border:1px solid #111111">C</div>\n</div>',
+    'Styled Text': '<h1 style="color:#111111;font-size:42;font-weight:bold">DevLens</h1>\n<p style="color:#555555;font-size:18">Watch how browser engines run.</p>'
 }
 
 type Phase = 'idle' | 'tokenizing' | 'building' | 'layouting' | 'painting' | 'done'
@@ -93,7 +93,7 @@ export default function Visualizer() {
             // 3. Layout (Collects steps)
             const layouted = layout(builtDom, 600, 0, 0, undefined, false)
             
-            // 4. Paint (Collects steps) - we use a dummy context just to record the steps
+            // 4. Paint (Collects steps)
             const dummyCanvas = document.createElement('canvas')
             const dummyCtx = dummyCanvas.getContext('2d')
             if (dummyCtx) {
@@ -155,31 +155,31 @@ export default function Visualizer() {
             paintProgressive(layoutTree, ctx, Infinity)
         }
 
-        // DRAW HIGHLIGHTS
+        // DRAW HIGHLIGHTS (Black & White Sketch style)
         if (hoveredBox) {
-            ctx.strokeStyle = 'rgba(99, 102, 241, 0.8)'
-            ctx.lineWidth = 2
-            ctx.setLineDash([5, 3])
+            ctx.strokeStyle = '#111111'
+            ctx.lineWidth = 1.5
+            ctx.setLineDash([4, 4])
             ctx.strokeRect(hoveredBox.x, hoveredBox.y, hoveredBox.width, hoveredBox.height)
             ctx.setLineDash([])
             
-            ctx.fillStyle = 'rgba(99, 102, 241, 0.9)'
+            ctx.fillStyle = '#111111'
             const label = `<${hoveredBox.node.name || 'text'}>`
             const textWidth = ctx.measureText(label).width
-            ctx.fillRect(hoveredBox.x, hoveredBox.y - 20, textWidth + 8, 20)
-            ctx.fillStyle = 'white'
-            ctx.font = 'bold 10px sans-serif'
-            ctx.fillText(label, hoveredBox.x + 4, hoveredBox.y - 6)
+            ctx.fillRect(hoveredBox.x, hoveredBox.y - 18, textWidth + 8, 18)
+            ctx.fillStyle = '#ffffff'
+            ctx.font = 'normal 10px monospace'
+            ctx.fillText(label, hoveredBox.x + 4, hoveredBox.y - 5)
         }
 
         if (selectedBox) {
-            ctx.strokeStyle = '#10b981'
-            ctx.lineWidth = 3
+            ctx.strokeStyle = '#111111'
+            ctx.lineWidth = 2.5
             ctx.strokeRect(selectedBox.x, selectedBox.y, selectedBox.width, selectedBox.height)
             
             const p = selectedBox.paddingTop || 0
             if (p > 0) {
-                ctx.fillStyle = 'rgba(16, 185, 129, 0.2)'
+                ctx.fillStyle = 'rgba(17, 17, 17, 0.08)'
                 ctx.fillRect(selectedBox.x, selectedBox.y, selectedBox.width, p)
                 ctx.fillRect(selectedBox.x, selectedBox.y + selectedBox.height - p, selectedBox.width, p)
                 ctx.fillRect(selectedBox.x, selectedBox.y + p, p, selectedBox.height - p * 2)
@@ -212,7 +212,6 @@ export default function Visualizer() {
     }
 
     function handleCanvasClick(e: React.MouseEvent<HTMLCanvasElement>) {
-        // Re-calculate to be sure we click the right thing
         if (!layoutTree || !canvasRef.current) return
         const rect = canvasRef.current.getBoundingClientRect()
         const x = (e.clientX - rect.left) * (canvasRef.current.width / rect.width)
@@ -239,14 +238,14 @@ export default function Visualizer() {
         
         ctx.fillStyle = style.backgroundColor || '#ffffff'
         ctx.fillRect(box.x, box.y, box.width, box.height)
-        ctx.strokeStyle = '#cccccc'
+        ctx.strokeStyle = '#111111'
         ctx.lineWidth = 1
         ctx.strokeRect(box.x, box.y, box.width, box.height)
 
         const textChild = box.node.children?.find(c => c.type === 'text')
         if (textChild && textChild.value) {
-            ctx.fillStyle = style.color || '#000000'
-            ctx.font = '16px sans-serif'
+            ctx.fillStyle = style.color || '#111111'
+            ctx.font = '14px monospace'
             ctx.fillText(textChild.value, box.x + 4 + padding, box.y + 20 + padding)
         }
     }
@@ -263,14 +262,13 @@ export default function Visualizer() {
     function VisualDomNode({ node, depth = 0 }: { node: DomNode, depth?: number }) {
         if (!node || depth > 8) return null
         const isText = node.type === 'text'
-        const color = isText ? 'var(--success)' : 'var(--accent)'
         const tag = isText ? `"${node.value?.slice(0, 15)}..."` : `<${node.name}>`
         
         return (
-            <div style={{ marginLeft: depth > 0 ? 16 : 0, borderLeft: depth > 0 ? '1px dashed var(--border)' : 'none', paddingLeft: depth > 0 ? 12 : 0, marginTop: 6 }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--bg-tertiary)', padding: '4px 10px', borderRadius: 6, border: `1px solid ${color}`, animation: 'fadeIn 0.3s ease-out' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}` }} />
-                    <span style={{ fontSize: 11, color: 'white', fontFamily: 'var(--font-mono)' }}>{tag}</span>
+            <div style={{ marginLeft: depth > 0 ? 16 : 0, borderLeft: depth > 0 ? '1px dashed var(--border-mid)' : 'none', paddingLeft: depth > 0 ? 12 : 0, marginTop: 6 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--bg-inset)', padding: '4px 10px', borderRadius: 2, border: `1px solid var(--border-strong)`, animation: 'fadeIn 0.3s ease-out' }}>
+                    <div style={{ width: 6, height: 6, background: 'var(--ink-primary)' }} />
+                    <span style={{ fontSize: 11, color: 'var(--ink-primary)', fontFamily: 'var(--font-mono)' }}>{tag}</span>
                 </div>
                 {node.children && node.children.length > 0 && (
                     <div style={{ marginTop: 4 }}>
@@ -282,50 +280,42 @@ export default function Visualizer() {
     }
 
     const step = steps[currentStep]
-    const phaseColors: Record<Phase, string> = {
-        idle: '#4b5563',
-        tokenizing: '#3b82f6',
-        building: '#10b981',
-        layouting: '#f59e0b',
-        painting: '#ef4444',
-        done: '#8b5cf6'
-    }
 
     return (
-        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: 20, gap: 20 }}>
+        <div className="animate-in" style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: 20, gap: 20 }}>
             
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                    <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>DevLens</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>The Browser Engine Visualizer</p>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--ink-primary)' }}>DEVLENS</h1>
+                    <p style={{ color: 'var(--ink-secondary)', fontSize: 13, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>Browser Engine Blueprint Visualizer</p>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
-                    <button onClick={copyLink} className="glass-panel" style={{ padding: '8px 16px', color: 'white', cursor: 'pointer', transition: 'all 0.2s', borderColor: showCopyFeedback ? 'var(--success)' : 'var(--glass-border)' }}>
-                        {showCopyFeedback ? '✓ Copied' : '🔗 Share Link'}
+                    <button onClick={copyLink} className="btn" style={{ borderColor: showCopyFeedback ? 'var(--border-strong)' : 'var(--border-strong)' }}>
+                        {showCopyFeedback ? 'COPIED' : 'SHARE LINK'}
                     </button>
-                    <button onClick={handleReset} className="glass-panel" style={{ padding: '8px 16px', color: 'white', cursor: 'pointer' }}>↻ Reset</button>
+                    <button onClick={handleReset} className="btn">RESET</button>
                 </div>
             </header>
 
             {/* ONBOARDING BANNER */}
             {showOnboarding && (
-                <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--accent-glow)', borderRadius: 8, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', animation: 'fadeIn 0.3s ease-out' }}>
+                <div className="sketch-panel" style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', animation: 'fadeIn 0.3s ease-out' }}>
                     <div>
-                        <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--accent)', marginBottom: 6 }}>Welcome to DevLens</h2>
-                        <p style={{ color: 'var(--text-primary)', fontSize: 13, lineHeight: 1.5, maxWidth: 800 }}>
-                            Ever wonder how modern browsers turn HTML into beautiful websites? DevLens is an educational engine visualizer. 
-                            Write some HTML, and watch step-by-step as our engine reads your code, builds a node tree, and paints it on the screen!
+                        <h2 style={{ fontSize: 14, fontWeight: 700, textTransform: 'uppercase', color: 'var(--ink-primary)', marginBottom: 6, fontFamily: 'var(--font-mono)' }}>Blueprint Overview</h2>
+                        <p style={{ color: 'var(--ink-secondary)', fontSize: 13, lineHeight: 1.5, maxWidth: 800 }}>
+                            An educational engine visualizer simulating the four core pipeline steps of a rendering engine.
+                            Write structural HTML, run the engine, and step through each component visually to observe node builders and canvas paint arrays.
                         </p>
                     </div>
-                    <button onClick={() => setShowOnboarding(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 16 }}>✕</button>
+                    <button onClick={() => setShowOnboarding(false)} style={{ background: 'transparent', border: 'none', color: 'var(--ink-primary)', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-mono)', fontWeight: 'bold' }}>[CLOSE]</button>
                 </div>
             )}
 
             <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 320px', gap: 20, flex: 1, minHeight: 0 }}>
                 
-                <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>Examples</h3>
+                <div className="sketch-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ padding: 14, borderBottom: '1px solid var(--border-strong)' }}>
+                        <h3 style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Examples</h3>
                     </div>
                     <div style={{ padding: 14 }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -333,28 +323,28 @@ export default function Visualizer() {
                                 <button 
                                     key={name} 
                                     onClick={() => { setHtml(code); handleReset() }}
-                                    style={{ padding: '6px 8px', fontSize: 12, background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)', borderRadius: 6, cursor: 'pointer', textAlign: 'left' }}
+                                    style={{ padding: '6px 8px', fontSize: 11, background: 'var(--bg-inset)', border: '1px solid var(--border-strong)', color: 'var(--ink-primary)', borderRadius: 2, cursor: 'pointer', textAlign: 'left', fontFamily: 'var(--font-mono)' }}
                                 >
-                                    {name}
+                                    {name.toUpperCase()}
                                 </button>
                             ))}
                         </div>
                     </div>
-                    <div style={{ flex: 1, padding: 14, display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid var(--border)' }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>HTML Editor</h3>
+                    <div style={{ flex: 1, padding: 14, display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid var(--border-strong)' }}>
+                        <h3 style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>HTML Editor</h3>
                         <textarea 
                             value={html}
                             onChange={e => setHtml(e.target.value)}
                             spellCheck={false}
-                            style={{ flex: 1, width: '100%', background: 'transparent', border: 'none', color: '#e2e8f0', fontFamily: 'var(--font-mono)', fontSize: 13, resize: 'none', outline: 'none', lineHeight: 1.6 }}
+                            style={{ flex: 1, width: '100%', background: 'var(--bg-inset)', border: '1px solid var(--border-strong)', padding: 10, borderRadius: 2, color: 'var(--ink-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, resize: 'none', outline: 'none', lineHeight: 1.6 }}
                         />
-                        <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: 8, padding: 12, fontSize: 11, color: 'var(--warning)', lineHeight: 1.5 }}>
-                            <strong style={{ display: 'block', marginBottom: 4 }}>⚠️ Safe Zone for Learning</strong>
-                            DevLens supports basic tags (<code>&lt;div&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;p&gt;</code>) and simple inline styles (<code>color</code>, <code>background-color</code>, <code>padding</code>, <code>margin</code>, <code>border</code>, <code>display: flex</code>). Complex CSS might not work!
+                        <div style={{ background: 'var(--bg-inset)', border: '1px solid var(--border-strong)', borderRadius: 2, padding: 12, fontSize: 11, color: 'var(--ink-secondary)', lineHeight: 1.5 }}>
+                            <strong style={{ display: 'block', marginBottom: 4, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>SAFE ZONE</strong>
+                            Supports divs, headings, spans, and clean styles (margins, padding, basic backgrounds). Complex properties will fall back cleanly.
                         </div>
                         <button 
                             onClick={run} 
-                            style={{ width: '100%', padding: '14px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}
+                            className="btn btn-primary"
                         >
                             RUN ENGINE
                         </button>
@@ -362,62 +352,62 @@ export default function Visualizer() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                    <div className="glass-panel" style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div className="sketch-panel" style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{ display: 'flex', gap: 6 }}>
                             {(['tokenizing', 'building', 'layouting', 'painting'] as Phase[]).map(p => (
-                                <div key={p} style={{ width: 8, height: 8, borderRadius: '50%', background: phase === p || (phase === 'done' && steps.length > 0) ? phaseColors[p] : 'var(--border)' }} />
+                                <div key={p} style={{ width: 8, height: 8, border: '1px solid var(--border-strong)', background: phase === p || (phase === 'done' && steps.length > 0) ? '#111111' : 'transparent' }} />
                             ))}
                         </div>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                            {phase === 'idle' ? 'System Ready' : `Phase: ${phase}`}
+                        <span style={{ fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--ink-secondary)', textTransform: 'uppercase' }}>
+                            {phase === 'idle' ? 'Ready' : `Phase: ${phase}`}
                         </span>
                         {steps.length > 0 && (
                             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-                                <div style={{ display: 'flex', gap: 4 }}>
-                                    <button onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>⏮</button>
-                                    <button onClick={() => setIsAutoplay(!isAutoplay)} style={{ background: 'transparent', border: 'none', color: 'white', fontSize: 18, cursor: 'pointer', width: 30 }}>{isAutoplay ? '⏸' : '▶'}</button>
-                                    <button onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>⏭</button>
+                                <div style={{ display: 'flex', gap: 8 }}>
+                                    <button onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} className="btn" style={{ padding: '2px 8px', fontSize: 10 }}>PREV</button>
+                                    <button onClick={() => setIsAutoplay(!isAutoplay)} className="btn" style={{ padding: '2px 8px', fontSize: 10 }}>{isAutoplay ? 'PAUSE' : 'PLAY'}</button>
+                                    <button onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))} className="btn" style={{ padding: '2px 8px', fontSize: 10 }}>NEXT</button>
                                 </div>
-                                <span style={{ fontSize: 12, opacity: 0.5 }}>{currentStep + 1} / {steps.length}</span>
+                                <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--ink-secondary)' }}>{currentStep + 1} / {steps.length}</span>
                             </div>
                         )}
                     </div>
 
-                    <div className="glass-panel" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb', borderRadius: 16, overflow: 'hidden', position: 'relative' }}>
+                    <div className="sketch-panel canvas-bg" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                         <canvas 
                             ref={canvasRef} 
                             width={600} 
                             height={400} 
-                            style={{ maxWidth: '100%', maxHeight: '100%', cursor: hoveredBox ? 'crosshair' : 'default' }} 
+                            style={{ maxWidth: '100%', maxHeight: '100%', border: '1px solid var(--border-strong)', cursor: hoveredBox ? 'crosshair' : 'default' }} 
                             onMouseMove={handleMouseMove}
                             onMouseLeave={() => setHoveredBox(null)}
                             onClick={handleCanvasClick}
                         />
                         {phase === 'idle' && (
-                            <div style={{ position: 'absolute', color: 'var(--text-secondary)', fontSize: 13, textAlign: 'center' }}>
-                                Output will appear here
+                            <div style={{ position: 'absolute', color: 'var(--ink-tertiary)', fontSize: 12, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
+                                Output array ready
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>Engine Log</h3>
+                <div className="sketch-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ padding: 14, borderBottom: '1px solid var(--border-strong)' }}>
+                        <h3 style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Engine Log</h3>
                     </div>
                     <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 16 }}>
                         {step ? (
-                            <div className="animate-fade-in">
-                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8, borderLeft: `4px solid ${phaseColors[step.type as Phase]}`, marginBottom: 16 }}>
-                                    <p style={{ fontSize: 13, lineHeight: 1.5 }}>{step.message}</p>
+                            <div className="animate-in">
+                                <div style={{ background: 'var(--bg-inset)', padding: 12, borderRadius: 2, borderLeft: `3px solid var(--border-strong)`, marginBottom: 16 }}>
+                                    <p style={{ fontSize: 12, lineHeight: 1.5, color: 'var(--ink-primary)' }}>{step.message}</p>
                                 </div>
 
                                 {step.tokens && (
                                     <div style={{ marginBottom: 16 }}>
-                                        <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8, fontWeight: 700 }}>EMITTED TOKENS</p>
+                                        <p style={{ fontSize: 10, color: 'var(--ink-secondary)', marginBottom: 8, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>EMITTED TOKENS</p>
                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                                             {step.tokens.map((t, i) => (
-                                                <span key={i} style={{ fontSize: 10, background: 'var(--bg-tertiary)', padding: '2px 6px', borderRadius: 4, color: t.type === 'text' ? 'var(--success)' : 'var(--accent)' }}>
+                                                <span key={i} style={{ fontSize: 10, background: 'var(--bg-muted)', border: '1px solid var(--border-mid)', padding: '2px 6px', borderRadius: 2, color: 'var(--ink-primary)', fontFamily: 'var(--font-mono)' }}>
                                                     {t.type === 'text' ? `"${t.value?.slice(0, 8)}..."` : `<${t.name}>`}
                                                 </span>
                                             ))}
@@ -426,17 +416,17 @@ export default function Visualizer() {
                                 )}
 
                                 {(step.dom || dom) && (
-                                    <div style={{ marginTop: 24 }}>
-                                        <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 12, fontWeight: 700 }}>VISUAL DOM TREE</p>
-                                        <div style={{ background: 'var(--bg-primary)', padding: 16, borderRadius: 8, overflowX: 'auto' }}>
+                                    <div style={{ marginTop: 20 }}>
+                                        <p style={{ fontSize: 10, color: 'var(--ink-secondary)', marginBottom: 12, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>VISUAL DOM TREE</p>
+                                        <div style={{ background: 'var(--bg-inset)', border: '1px solid var(--border-strong)', padding: 16, borderRadius: 2, overflowX: 'auto' }}>
                                             <VisualDomNode node={(step.dom || dom)!} />
                                         </div>
                                     </div>
                                 )}
                             </div>
                         ) : (
-                            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, textAlign: 'center', fontSize: 12 }}>
-                                No engine data<br/>available yet
+                            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ink-tertiary)', textAlign: 'center', fontSize: 11, fontFamily: 'var(--font-mono)' }}>
+                                NO ACTIVE PIPELINE RUN
                             </div>
                         )}
                     </div>
@@ -445,59 +435,59 @@ export default function Visualizer() {
                     {selectedBox && (
                         <div style={{ 
                             padding: 20, 
-                            borderTop: '2px solid var(--success)', 
-                            background: 'var(--bg-tertiary)', 
+                            borderTop: '1px solid var(--border-strong)', 
+                            background: 'var(--bg-inset)', 
                             animation: 'fadeIn 0.2s ease-out',
                             position: 'relative',
                             zIndex: 10
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--success)' }} />
-                                    <h3 style={{ fontSize: 12, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inspector</h3>
+                                    <div style={{ width: 8, height: 8, background: 'var(--ink-primary)' }} />
+                                    <h3 style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-primary)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Inspector</h3>
                                 </div>
-                                <button onClick={() => setSelectedBox(null)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', width: 24, height: 24, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+                                <button onClick={() => setSelectedBox(null)} style={{ background: 'transparent', border: 'none', color: 'var(--ink-primary)', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 11 }}>[X]</button>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, fontFamily: 'var(--font-mono)', fontSize: 11 }}>
                                 <div>
-                                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>TAG</p>
-                                    <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>&lt;{selectedBox.node.name || 'text'}&gt;</p>
+                                    <p style={{ color: 'var(--ink-secondary)', marginBottom: 2 }}>TAG</p>
+                                    <p style={{ fontWeight: 700, color: 'var(--ink-primary)' }}>&lt;{selectedBox.node.name || 'text'}&gt;</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>SIZE</p>
-                                    <p style={{ fontSize: 14, fontWeight: 700 }}>{Math.round(selectedBox.width)} × {Math.round(selectedBox.height)}</p>
+                                    <p style={{ color: 'var(--ink-secondary)', marginBottom: 2 }}>SIZE</p>
+                                    <p style={{ fontWeight: 700 }}>{Math.round(selectedBox.width)} x {Math.round(selectedBox.height)}</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>POSITION</p>
-                                    <p style={{ fontSize: 12, color: 'white' }}>X: {Math.round(selectedBox.x)}, Y: {Math.round(selectedBox.y)}</p>
+                                    <p style={{ color: 'var(--ink-secondary)', marginBottom: 2 }}>POSITION</p>
+                                    <p style={{ color: 'var(--ink-primary)' }}>X: {Math.round(selectedBox.x)}, Y: {Math.round(selectedBox.y)}</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>SPACING</p>
-                                    <p style={{ fontSize: 12, color: 'white' }}>P: {selectedBox.paddingTop}px, M: {selectedBox.marginTop}px</p>
+                                    <p style={{ color: 'var(--ink-secondary)', marginBottom: 2 }}>SPACING</p>
+                                    <p style={{ color: 'var(--ink-primary)' }}>P: {selectedBox.paddingTop}px, M: {selectedBox.marginTop}px</p>
                                 </div>
                             </div>
                         </div>
                     )}
                     
                     {/* JARGON BUSTER GLOSSARY */}
-                    <div style={{ padding: 14, borderTop: '1px solid var(--border)', background: 'var(--bg-tertiary)' }}>
-                        <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>Jargon Buster</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div style={{ padding: 14, borderTop: '1px solid var(--border-strong)', background: 'var(--bg-inset)' }}>
+                        <h3 style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-primary)', marginBottom: 10, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Glossary</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--font-mono)', fontSize: 10 }}>
                             <div>
-                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)' }}>TOKENIZING</span>
-                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Reading code and splitting it into tiny pieces (tokens) like words in a sentence.</p>
+                                <span style={{ fontWeight: 700, color: 'var(--ink-primary)' }}>TOKENIZING</span>
+                                <p style={{ color: 'var(--ink-secondary)', marginTop: 2, lineHeight: 1.4 }}>Reading source markup and parsing text characters into structural blocks.</p>
                             </div>
                             <div>
-                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--success)' }}>BUILDING</span>
-                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Taking tokens to build a family tree. Each HTML tag becomes a "Node" (branch).</p>
+                                <span style={{ fontWeight: 700, color: 'var(--ink-primary)' }}>BUILDING</span>
+                                <p style={{ color: 'var(--ink-secondary)', marginTop: 2, lineHeight: 1.4 }}>Arranging tokens into tree-based node objects linking parent to child.</p>
                             </div>
                             <div>
-                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--warning)' }}>LAYOUTING</span>
-                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Browser does math to figure out how wide, tall, and where every box goes.</p>
+                                <span style={{ fontWeight: 700, color: 'var(--ink-primary)' }}>LAYOUTING</span>
+                                <p style={{ color: 'var(--ink-secondary)', marginTop: 2, lineHeight: 1.4 }}>Computing layout bounds, coordinates, line spacing, and positioning grids.</p>
                             </div>
                             <div>
-                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--error)' }}>PAINTING</span>
-                                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.4 }}>Filling the boxes with background colors, borders, and text.</p>
+                                <span style={{ fontWeight: 700, color: 'var(--ink-primary)' }}>PAINTING</span>
+                                <p style={{ color: 'var(--ink-secondary)', marginTop: 2, lineHeight: 1.4 }}>Filling bounds with styled strokes, solid backgrounds, and text layers.</p>
                             </div>
                         </div>
                     </div>
@@ -505,9 +495,9 @@ export default function Visualizer() {
 
             </div>
 
-            <footer style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px', fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>
-                <span>DEV_LENS ENGINE v1.0.5 // STATUS: {phase.toUpperCase()}</span>
-                <span>BUILD_DATE: 2026-04-25</span>
+            <footer style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px', fontSize: 10, color: 'var(--ink-secondary)', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>
+                <span>DEV_LENS ENGINE v1.0.6 // STATUS: {phase.toUpperCase()}</span>
+                <span>BUILD_DATE: 2026-05-19</span>
             </footer>
         </div>
     )
