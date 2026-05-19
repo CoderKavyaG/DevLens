@@ -4,7 +4,7 @@
 
 DevLens is an interactive, educational tool that simulates the four core phases of a real browser rendering engine: **Tokenizing → DOM Building → Layout → Painting**. Write HTML in the editor and watch the engine process it in real time.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-6366f1?style=for-the-badge)](https://coderkavyag.github.io/lens)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-6366f1?style=for-the-badge)](https://lensdev.vercel.app/)
 
 ---
 

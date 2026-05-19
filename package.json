@@ -5,7 +5,7 @@
   "description": "An interactive browser engine visualizer — watch Tokenizing, DOM Building, Layout, and Painting in real time.",
   "author": "CoderKavyaG",
   "license": "MIT",
-  "homepage": "https://coderkavyag.github.io/lens",
+  "homepage": "https://lensdev.vercel.app/",
   "type": "module",
   "scripts": {
     "dev": "vite",
