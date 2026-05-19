@@ -24,7 +24,7 @@ export default function Visualizer() {
     const [dom, setDom] = useState<DomNode | null>(null)
     const [layoutTree, setLayoutTree] = useState<LayoutBox | null>(null)
     const [isAutoplay, setIsAutoplay] = useState(false)
-    const [autoplaySpeed, setAutoplaySpeed] = useState(400)
+    const [autoplaySpeed] = useState(400)
     const [phase, setPhase] = useState<Phase>('idle')
     const [showCopyFeedback, setShowCopyFeedback] = useState(false)
     const [showOnboarding, setShowOnboarding] = useState(true)
@@ -151,11 +151,8 @@ export default function Visualizer() {
                 if (steps[i].type === 'painting') paintCount++
             }
             paintProgressive(layoutTree, ctx, paintCount)
-        } else {
-            const phaseType = currentStepObj.type
-            if (phaseType === 'layouting' || phaseType === 'painting' || phase === 'done') {
-                paint(layoutTree, ctx, true)
-            }
+        } else if (currentStep === steps.length - 1) {
+            paintProgressive(layoutTree, ctx, Infinity)
         }
 
         // DRAW HIGHLIGHTS
@@ -299,8 +296,8 @@ export default function Visualizer() {
             
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                    <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.02em', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>DevLens</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>The Browser Engine Visualizer</p>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>DevLens</h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>The Browser Engine Visualizer</p>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
                     <button onClick={copyLink} className="glass-panel" style={{ padding: '8px 16px', color: 'white', cursor: 'pointer', transition: 'all 0.2s', borderColor: showCopyFeedback ? 'var(--success)' : 'var(--glass-border)' }}>
@@ -312,37 +309,39 @@ export default function Visualizer() {
 
             {/* ONBOARDING BANNER */}
             {showOnboarding && (
-                <div style={{ background: 'linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))', border: '1px solid var(--glass-border)', borderRadius: 12, padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', animation: 'fadeIn 0.4s ease-out' }}>
+                <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--accent-glow)', borderRadius: 8, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', animation: 'fadeIn 0.3s ease-out' }}>
                     <div>
-                        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'white', marginBottom: 8 }}>Welcome to DevLens! 🕵️‍♀️</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.5, maxWidth: 800 }}>
-                            Ever wonder how Google Chrome or Safari turns boring text into beautiful websites? DevLens is like an X-ray machine for your browser. 
-                            Write some HTML, and watch in slow-motion as our engine reads your code, builds a family tree of boxes, and paints them on the screen!
+                        <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--accent)', marginBottom: 6 }}>Welcome to DevLens</h2>
+                        <p style={{ color: 'var(--text-primary)', fontSize: 13, lineHeight: 1.5, maxWidth: 800 }}>
+                            Ever wonder how modern browsers turn HTML into beautiful websites? DevLens is an educational engine visualizer. 
+                            Write some HTML, and watch step-by-step as our engine reads your code, builds a node tree, and paints it on the screen!
                         </p>
                     </div>
-                    <button onClick={() => setShowOnboarding(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 18 }}>✕</button>
+                    <button onClick={() => setShowOnboarding(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 16 }}>✕</button>
                 </div>
             )}
 
             <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 320px', gap: 20, flex: 1, minHeight: 0 }}>
                 
                 <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ padding: 16, borderBottom: '1px solid var(--border)' }}>
-                        <h3 style={{ fontSize: 12, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 12 }}>Examples</h3>
+                    <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>Examples</h3>
+                    </div>
+                    <div style={{ padding: 14 }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                             {Object.entries(EXAMPLES).map(([name, code]) => (
                                 <button 
                                     key={name} 
                                     onClick={() => { setHtml(code); handleReset() }}
-                                    style={{ padding: '6px 8px', fontSize: 11, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', borderRadius: 6, cursor: 'pointer', textAlign: 'left' }}
+                                    style={{ padding: '6px 8px', fontSize: 12, background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)', borderRadius: 6, cursor: 'pointer', textAlign: 'left' }}
                                 >
                                     {name}
                                 </button>
                             ))}
                         </div>
                     </div>
-                    <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        <h3 style={{ fontSize: 12, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>HTML Editor</h3>
+                    <div style={{ flex: 1, padding: 14, display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid var(--border)' }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>HTML Editor</h3>
                         <textarea 
                             value={html}
                             onChange={e => setHtml(e.target.value)}
@@ -395,8 +394,7 @@ export default function Visualizer() {
                             onClick={handleCanvasClick}
                         />
                         {phase === 'idle' && (
-                            <div style={{ position: 'absolute', color: '#94a3b8', fontSize: 14, textAlign: 'center' }}>
-                                <div style={{ fontSize: 32, marginBottom: 8 }}>👁️</div>
+                            <div style={{ position: 'absolute', color: 'var(--text-secondary)', fontSize: 13, textAlign: 'center' }}>
                                 Output will appear here
                             </div>
                         )}
@@ -404,10 +402,10 @@ export default function Visualizer() {
                 </div>
 
                 <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ padding: 16, borderBottom: '1px solid var(--border)' }}>
-                        <h3 style={{ fontSize: 12, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>Engine Log</h3>
+                    <div style={{ padding: 14, borderBottom: '1px solid var(--border)' }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>Engine Log</h3>
                     </div>
-                    <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 16 }}>
                         {step ? (
                             <div className="animate-fade-in">
                                 <div style={{ background: 'rgba(255,255,255,0.05)', padding: 12, borderRadius: 8, borderLeft: `4px solid ${phaseColors[step.type as Phase]}`, marginBottom: 16 }}>
@@ -482,8 +480,8 @@ export default function Visualizer() {
                     )}
                     
                     {/* JARGON BUSTER GLOSSARY */}
-                    <div style={{ padding: 16, borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
-                        <h3 style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.05em' }}>Jargon Buster</h3>
+                    <div style={{ padding: 14, borderTop: '1px solid var(--border)', background: 'var(--bg-tertiary)' }}>
+                        <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>Jargon Buster</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                             <div>
                                 <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)' }}>TOKENIZING</span>

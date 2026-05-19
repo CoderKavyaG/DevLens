@@ -1,18 +1,16 @@
 :root {
-  --bg-primary: #0a0a0c;
-  --bg-secondary: #141417;
-  --bg-tertiary: #1c1c21;
-  --accent: #6366f1;
-  --accent-glow: rgba(99, 102, 241, 0.5);
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --border: #27272a;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --accent: #58a6ff;
+  --accent-glow: rgba(88, 166, 255, 0.2);
+  --text-primary: #c9d1d9;
+  --text-secondary: #8b949e;
+  --border: #30363d;
+  --success: #3fb950;
+  --warning: #d29922;
+  --error: #f85149;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Menlo', 'Consolas', monospace;
 }
 
 * {
@@ -49,10 +47,9 @@ body {
 }
 
 .glass-panel {
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
 .accent-glow {

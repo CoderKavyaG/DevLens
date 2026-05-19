@@ -1,7 +1,11 @@
 {
   "name": "devlens",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "An interactive browser engine visualizer — watch Tokenizing, DOM Building, Layout, and Painting in real time.",
+  "author": "CoderKavyaG",
+  "license": "MIT",
+  "homepage": "https://coderkavyag.github.io/lens",
   "type": "module",
   "scripts": {
     "dev": "vite",

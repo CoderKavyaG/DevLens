@@ -1,73 +1,133 @@
-# React + TypeScript + Vite
+# 🔬 DevLens — Browser Engine Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **Watch how a browser turns HTML into a webpage — step by step.**
 
-Currently, two official plugins are available:
+DevLens is an interactive, educational tool that simulates the four core phases of a real browser rendering engine: **Tokenizing → DOM Building → Layout → Painting**. Write HTML in the editor and watch the engine process it in real time.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-6366f1?style=for-the-badge)](https://coderkavyag.github.io/lens)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Step-by-step engine visualization** — Walk through each phase manually or use autoplay
+- **Phase indicator** — Colour-coded dots show which engine phase is active (Tokenizing / Building / Layout / Painting)
+- **Visual DOM Tree** — See the node tree build up live in the Engine Log panel
+- **Canvas painter** — The final render appears progressively on an HTML Canvas
+- **Box Inspector** — Click any element on the canvas to inspect its tag, size, position, and spacing
+- **Hover highlight** — Mouse over the canvas to see element boundaries outlined
+- **Share Link** — Encode your HTML snippet into a URL and share it with anyone
+- **Built-in examples** — Quickly load Glass Card, Hero Section, Flex Layout, and more
+- **Jargon Buster** — Plain-English glossary for Tokenizing, Building, Layouting, and Painting
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠 Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Layer | Technology |
+|-------|-----------|
+| UI Framework | React 19 + TypeScript |
+| Build Tool | Vite 8 |
+| Rendering | HTML5 Canvas (2D API) |
+| Styling | Vanilla CSS (dark theme, glassmorphism) |
+| Engine | Custom tokenizer, DOM builder, layout engine, and painter (all in `/src/engine`) |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 📁 Project Structure
+
+```
+devlens/
+├── src/
+│   ├── engine/
+│   │   ├── tokenizer.ts      # HTML → Token stream
+│   │   ├── domBuilder.ts     # Token stream → DOM tree
+│   │   ├── layoutEngine.ts   # DOM tree → Layout boxes
+│   │   ├── painter.ts        # Layout boxes → Canvas draw calls
+│   │   ├── styleEngine.ts    # Inline style parsing + inheritance
+│   │   └── stepEmitter.ts    # Step recording for visualization
+│   ├── components/
+│   │   └── Visualizer.tsx    # Main UI — editor, canvas, log panel
+│   ├── index.css             # Design tokens + global styles
+│   └── main.tsx              # React entry point
+├── index.html
+├── vite.config.ts
+└── package.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# 1. Clone the repo
+git clone https://github.com/CoderKavyaG/lens.git
+cd lens
+
+# 2. Install dependencies
+npm install
+
+# 3. Start dev server
+npm run dev
 ```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 🏗 Build for Production
+
+```bash
+npm run build
+```
+
+The output will be in the `dist/` folder — ready to serve as a static site.
+
+---
+
+## 🌐 Deployment
+
+This project is a pure static site (no backend). You can deploy it to:
+
+- **GitHub Pages** — see deployment steps below
+- **Vercel** — connect your GitHub repo, it auto-detects Vite
+- **Netlify** — drag & drop the `dist/` folder or connect via Git
+
+### Deploy to GitHub Pages
+
+```bash
+# Install the gh-pages package
+npm install --save-dev gh-pages
+
+# Add these scripts to package.json:
+#   "predeploy": "npm run build"
+#   "deploy": "gh-pages -d dist"
+
+# Set the base in vite.config.ts:
+#   base: '/lens/'
+
+# Deploy
+npm run deploy
+```
+
+---
+
+## 📝 Engine Limitations (Safe Zone)
+
+DevLens is a **simplified** educational engine. It supports:
+- ✅ Basic tags: `<div>`, `<h1>`–`<h6>`, `<p>`, `<span>`
+- ✅ Inline styles: `color`, `background-color`, `padding`, `margin`, `border`, `display: flex`, `gap`, `width`, `font-size`
+- ❌ CSS classes, external stylesheets, pseudo-selectors
+- ❌ JavaScript, forms, images, or complex HTML attributes
+
+---
+
+## 👩‍💻 Author
+
+Built by **Kavya G** — [@CoderKavyaG](https://github.com/CoderKavyaG)
+
+---
+
+## 📄 License
+
+MIT License — feel free to use, fork, and learn from this project.
