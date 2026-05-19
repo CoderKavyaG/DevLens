@@ -332,7 +332,7 @@ export default function Visualizer() {
                                     background: 'var(--ink-primary)',
                                     transform: 'rotate(45deg)',
                                 }} />
-                                <span style={{ color: 'var(--bg-page)', fontWeight: 600 }}>UNDERSTAND MORE:</span> Read CoderKavyaG's blog on browsers! 🚀
+                                <span style={{ color: 'var(--bg-page)', fontWeight: 600 }}>UNDERSTAND MORE:</span> Read CoderKavyaG's blog on browsers!
                             </div>
                         )}
                     </div>
